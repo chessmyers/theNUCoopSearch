@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Cool Project Name</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/uikit.min.css"/>
+    <script src="https://www.gstatic.com/firebasejs/5.9.1/firebase.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/uikit.min.js"></script>
+    <script src="js/uikit-icons.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.js"></script>
+    <script>
+        let companies = [];
+        let columns = ["Name", "Type", "AverageRate"];
+        $(function () {
+            $.ajax({
+                url: 'https://3eb9d721.us-east.apiconnect.appdomain.cloud/aa9823b2-9365-4ee7-8b10-0a7925d92cd9/get',
+                type: 'GET',
+                success: function (result) {
+                    result.body.companies.forEach((company) => {
+                        companies.push(company);
+                    })
+                    console.log(companies);
+                    buildTable()
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        });
+
+        function buildTable() {
+            for (let el of companies) {
+                let row = document.createElement("tr");
+
+                let nameCel = document.createElement("td");
+                nameCel.innerText = el["name"];
+                nameCel.style = "color: #6a808b; text-decoration: underline; cursor: pointer";
+                nameCel.onclick = function () {
+                    showInfo(el["name"])
+                };
+                nameCel.setAttribute('uk-toggle', 'target: #modal-center');
+                nameCel.className += 'uk-text-lead';
+                row.appendChild(nameCel);
+
+                let culture = document.createElement("td");
+                if (el.sentiment) {
+                    // has sentiment
+                    culture.appendChild(getSentimentFace(el.sentiment["Question 3"]));
+                } else {
+                    // no sentiment
+                    let pic = document.createElement("IMG");
+                    pic.src = 'img/neutral.png';
+                    pic.className += 'uk-align-center';
+                    culture.appendChild(pic);
+                }
+                row.appendChild(culture);
+
+                let profRel = document.createElement("td");
+                if (el.sentiment) {
+                    // has sentiment
+                    profRel.appendChild(getSentimentFace(el.sentiment["Question 4"]));
+                } else {
+                    // no sentiment
+                    let pic = document.createElement("IMG");
+                    pic.src = 'img/neutral.png';
+                    pic.className += 'uk-align-center';
+                    profRel.appendChild(pic);
+                }
+                row.appendChild(profRel);
+
+                document.getElementById("tabBody").appendChild(row);
+                // for (let dat in el) {
+                //     let cel = document.createElement("td");
+                //     cel.innerText = el[dat];
+                //     if (dat === "name") {
+                //         cel.style = "color: blue; text-decoration: underline; cursor: pointer";
+                //         // cel.setAttribute('onclick', function () {alert("Hey")})
+                //         cel.setAttribute('uk-toggle', 'target: #modal-center');
+                //         cel.onclick = function () {
+                //             showInfo(el[dat]);
+                //         }
+                //     }
+                //     row.appendChild(cel);
+                // }
+            }
+            setTimeout(loadTables, 100);
+        }
+
+        function getSentimentFace(sentiment) {
+            let pic = document.createElement("IMG");
+            if (sentiment < -0.25) {
+                pic.src = 'img/sad.png';
+                pic.className += 'uk-align-center';
+                return pic;
+            } else if (sentiment > 0.25) {
+                pic.src = 'img/happy.png';
+                pic.className += 'uk-align-center';
+                return pic;
+            } else {
+                pic.src = 'img/neutral.png';
+                pic.className += 'uk-align-center';
+                return pic;
+            }
+        }
+
+        function showInfo(name) {
+            //$('#myModal').html('');
+            // location.href = 'pages/viewcompany.html?name='.concat(name);
+            let url = 'https://3eb9d721.us-east.apiconnect.appdomain.cloud/30ce8d0a-0d50-4ec2-a4d5-03d90c511fba/get'.concat('?company=').concat(name);
+            $.ajax({
+                url: url,
+                success: function (result) {
+                    loadCompanyModal(name, result)
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
+        }
+
+        function loadCompanyModal(name, data) {
+            console.log(data);
+            $('#companyHeader').html(name);
+            if (data.body.responses) {
+                for (let response of data.body.responses) {
+                    let rule = document.createElement("hr");
+                    $('#companyHeader').append(rule);
+                    let review = document.createElement('div');
+                    let name = document.createElement('h3');
+                    name.innerHTML = response.name.concat(" says...");
+                    review.appendChild(name);
+
+                    let head1 = document.createElement('h4');
+                    head1.innerHTML = "Company Culture";
+                    review.appendChild(head1);
+
+                    let answer1 = document.createElement('h5');
+                    answer1.innerHTML = response["Question Answers"]["Question 3"];
+                    review.appendChild(answer1);
+
+                    let head2 = document.createElement('h4');
+                    head2.innerHTML = "Professional Relationship";
+                    review.appendChild(head2);
+
+                    let answer2 = document.createElement('h5');
+                    answer2.innerHTML = response["Question Answers"]["Question 4"];
+                    review.appendChild(answer2);
+
+                    $('#companyHeader').append(review);
+                }
+            } else {
+
+            }
+
+        }
+
+        function loadTables() {
+            $('#companies').DataTable();
+        }
+    </script>
+</head>
+<body>
+<!--<div id="mySidenav" class="sidenav">-->
+<!--<a href="#" id="home" style="left: 0;">Home</a>-->
+<!--<a href="./pages/submit.html" id="submit">Submit</a>-->
+<!--<a href="./pages/about.html" id="about">About</a>-->
+<!--</div>-->
+<nav class="uk-navbar-container uk-margin" uk-navbar style="background-color: #6a808b">
+    <div class="uk-navbar-center">
+
+        <a class="uk-navbar-item uk-logo" href="#">
+            <img src="img/titleLogo.png" height="200" width="200"/>
+        </a>
+        <ul class="uk-navbar-nav">
+            <li>
+                <a href="pages/submit.html" style="color:white;">
+                    <span class="uk-icon uk-margin-small-right" uk-icon="icon: pencil"></span>
+                    Submit New
+                </a>
+            </li>
+        </ul>
+        <ul class="uk-navbar-nav">
+            <li>
+                <a href="pages/about.html" style="color:white;">
+                    <span class="uk-icon uk-margin-small-right" uk-icon="icon: info"></span>
+                    About
+                </a>
+            </li>
+        </ul>
+
+
+        <h2 class="uk-heading-bullet" style="margin-top: 10px; color: whitesmoke;">The Co-op Search. Reinvented</h2>
+    </div>
+</nav>
+
+<div class="uk-overlay uk-overlay-default">
+    <div class="uk-container uk-container-large uk-align-center uk-width-3-4">
+        <h1 class="uk-heading-line uk-text-center">Welcome to the NU Coop Search</h1>
+        <hr>
+        <table id="companies" class="display" width="100%;">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Company Culture</th>
+                <th>Professionalism</th>
+            </tr>
+            </thead>
+            <tbody id="tabBody">
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<div id="modal-center" class="uk-flex-top" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical" id="myModal">
+
+        <button class="uk-modal-close-default" type="button" uk-close></button>
+        <h1 id="companyHeader"></h1>
+
+
+    </div>
+</div>
+
+</body>
+</html>

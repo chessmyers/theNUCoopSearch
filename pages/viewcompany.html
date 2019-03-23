@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>View Company</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../css/uikit.min.css" />
+    <script src="https://www.gstatic.com/firebasejs/5.9.1/firebase.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/uikit.min.js"></script>
+    <script src="../js/uikit-icons.min.js"></script>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        let companyName = "";
+        $(function() {
+            let u = new URL(location.href);
+            companyName = u.searchParams.get("name");
+            loadData()
+        });
+
+        function loadData() {
+            firebase.firestore().collection("completedForms").where("company", "==", companyName).get()
+                .then((forms) => {
+                    forms.forEach((form) => {
+                        console.log(form.data());
+                        document.body.innerText += form.data();
+                    })
+                }).catch((err) => {
+                    console.log(err);
+            })
+        }
+    </script>
+</head>
+<body>
+
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>View Company</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../css/uikit.min.css" />
+    <script src="https://www.gstatic.com/firebasejs/5.9.1/firebase.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/uikit.min.js"></script>
+    <script src="../js/uikit-icons.min.js"></script>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        function onSubmit() {
+            let softSkills = [];
+            let hardSkills = [];
+            let name = $("#name").val();
+            let nuid = $("#nuid").val();
+            let company = $("#companyName").val();
+
+            $("#comm").prop('checked') ? softSkills.push($("#comm").val()) : null;
+            $("#pres").prop('checked') ? softSkills.push($("#pres").val()) : null;
+            $("#deals").prop('checked') ? softSkills.push($("#deals").val()) : null;
+            $("#collab").prop('checked') ? softSkills.push($("#collab").val()) : null;
+            $("#thinking").prop('checked') ? softSkills.push($("#thinking").val()) : null;
+            $("#leadership").prop('checked') ? softSkills.push($("#leadership").val()) : null;
+            $("#teamwork").prop('checked') ? softSkills.push($("#teamwork").val()) : null;
+            $("#timeManage").prop('checked') ? softSkills.push($("#timeManage").val()) : null;
+
+            $("#programming").prop('checked') ? hardSkills.push($("#programming").val()) : null;
+            $("#spread").prop('checked') ? hardSkills.push($("#spread").val()) : null;
+            $("#writ").prop('checked') ? hardSkills.push($("#writ").val()) : null;
+            $("#finanMod").prop('checked') ? hardSkills.push($("#finanMod").val()) : null;
+            $("#portAnal").prop('checked') ? hardSkills.push($("#portAnal").val()) : null;
+            $("#procAuto").prop('checked') ? hardSkills.push($("#procAuto").val()) : null;
+            $("#coffee").prop('checked') ? hardSkills.push($("#coffee").val()) : null;
+
+            let culture = $("#culture").val();
+            let profRelationship = $("#empRelationship").val();
+            let satisfaction = $("input[name='q5']:checked").val();
+            if (name && nuid && company && softSkills.length >= 3 && hardSkills.length >= 3 && culture && profRelationship && satisfaction) {
+                // form is valid
+                let json = new Object({
+                    "Name" : name,
+                    "NUID": nuid,
+                    "Company Name": company,
+                    "Questions": {
+                        "Question 1": softSkills,
+                        "Question 2": hardSkills,
+                        "Question 3": culture,
+                        "Question 4": profRelationship,
+                        "Question 5": parseInt(satisfaction, 10)
+                    }
+                });
+                console.log(json);
+                $.ajax({
+                    url: 'https://3eb9d721.us-east.apiconnect.appdomain.cloud/7f3538ab-39f4-40ac-ba3f-b9caf54f90ab/save',
+                    type: 'POST',
+                    contentType:'application/json',
+                    data: JSON.stringify(json),
+                    dataType:'json',
+                    success: (result) => {
+                        console.log(result);
+                    },
+                    error: (err) => {
+                        console.log(err);
+                    }
+                });
+                location.href = '../index.html';
+            } else {
+                // form is not valid
+                UIkit.notification({
+                    message: 'Form is not valid. Please fill out all required fields',
+                    status: 'danger'
+                })
+            }
+
+
+
+        }
+    </script>
+</head>
+<body>
+<!--<div id="mySidenav" class="sidenav">-->
+    <!--<a href="../index.html" id="home">Home</a>-->
+    <!--<a href="#" id="submit" style="left: 0;">Submit</a>-->
+    <!--<a href="../pages/about.html" id="about">About</a>-->
+<!--</div>-->
+
+<nav class="uk-navbar-container uk-margin" uk-navbar style="background-color: #6a808b">
+    <div class="uk-navbar-center">
+
+        <a class="uk-navbar-item uk-logo" href="../index.html">
+            <img src="../img/titleLogo.png" height="200" width="200"/>
+        </a>
+        <ul class="uk-navbar-nav">
+            <li>
+                <a href="#" style="color:white; font-weight: bold">
+                    <span class="uk-icon uk-margin-small-right" uk-icon="icon: pencil" ></span>
+                    Submit New
+                </a>
+            </li>
+        </ul>
+        <ul class="uk-navbar-nav">
+            <li>
+                <a href="../pages/about.html" style="color:white;">
+                    <span class="uk-icon uk-margin-small-right" uk-icon="icon: info"></span>
+                    About
+                </a>
+            </li>
+        </ul>
+
+
+        <h2 class="uk-heading-bullet" style="margin-top: 10px; color: whitesmoke;">The Co-op Search. Reinvented</h2>
+    </div>
+</nav>
+
+<div class="uk-position-large uk-position-top-center uk-overlay uk-overlay-default" style="margin-top: 200px;">
+    <div class="uk-container uk-container-large uk-align-center">
+        <h1 class="uk-heading-primary uk-text-center">Submit New Review</h1>
+        <form class="uk-form-stacked uk-margin-large">
+
+            <div class="uk-margin uk-align-center uk-width-3-4">
+                <label class="uk-form-label uk-text-center uk-text-lead" for="name">Name</label>
+                <div class="uk-form-controls">
+                    <input class="uk-input" id="name" type="text" placeholder="Please enter your name...">
+                </div>
+            </div>
+
+            <div class="uk-margin uk-align-center uk-width-3-4 uk-margin-large-top">
+                <label class="uk-form-label uk-text-center uk-text-lead" for="nuid">NUID</label>
+                <div class="uk-form-controls">
+                    <input class="uk-input" id="nuid" type="text" placeholder="Please enter your NUID...">
+                </div>
+            </div>
+
+            <div class="uk-margin uk-align-center uk-width-3-4 uk-margin-large-top">
+                <label class="uk-form-label uk-text-center uk-text-lead" for="companyName">What company did you work at?</label>
+                <select class="uk-select" id="companyName">
+                    <option>State Street</option>
+                    <option>IBM</option>
+                    <option>UBS</option>
+                </select>
+            </div>
+
+            <div class="uk-margin uk-align-center uk-width-3-4 uk-margin-large-top">
+                <label class="uk-form-label uk-text-center uk-text-lead" for="softSkills">What top 3 soft skills did you improve at this co-op?</label>
+                <div class="uk-form-controls">
+                    <div class="uk-margin" id="softSkills">
+                        <label><input class="uk-checkbox" type="checkbox" id="comm" value="Communication"> Communication</label><br>
+                        <label><input class="uk-checkbox" type="checkbox" id="pres" value="Presenting"> Presenting</label><br>
+                        <label><input class="uk-checkbox" type="checkbox" id="deals" value="Making Deals"> Making deals</label><br>
+                        <label><input class="uk-checkbox" type="checkbox" id="collab" value="Collaborating"> Collaborating</label><br>
+                        <label><input class="uk-checkbox" type="checkbox" id="thinking" value="Analytical Thinking"> Analytical Thinking</label><br>
+                        <label><input class="uk-checkbox" type="checkbox" id="leadership" value="Leadership"> Leadership</label><br>
+                        <label><input class="uk-checkbox" type="checkbox" id="teamwork" value="Teamwork"> Teamwork</label><br>
+                        <label><input class="uk-checkbox" type="checkbox" id="timeManage" value="Time Management"> Time Management</label><br>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="uk-margin uk-align-center uk-width-3-4 uk-margin-large-top">
+                <label class="uk-form-label uk-text-center uk-text-lead" for="hardSkills">What top 3 hard skills did you improve at this co-op?</label>
+                <div class="uk-form-controls">
+                    <div class="uk-margin" id="hardSkills"><br>
+                        <label><input class="uk-checkbox" type="checkbox" id="programming" value="Programming"> Programming</label><br>
+                        <label><input class="uk-checkbox" type="checkbox" id="spread" value="Spreadsheets"> Spreadsheets</label><br>
+                        <label><input class="uk-checkbox" type="checkbox" id="writ" value="Writing"> Writing</label><br>
+                        <label><input class="uk-checkbox" type="checkbox" id="finanMod" value="Financial Modeling"> Financial Modeling</label><br>
+                        <label><input class="uk-checkbox" type="checkbox" id="portAnal" value="Portfolio Analysis"> Portfolio Analysis</label><br>
+                        <label><input class="uk-checkbox" type="checkbox" id="procAuto" value="Process Automation"> Process Automation</label><br>
+                        <label><input class="uk-checkbox" type="checkbox" id="coffee" value="Making Coffee"> Making Coffee</label><br>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="uk-margin uk-align-center uk-width-3-4 uk-margin-large-top">
+                <label class="uk-form-label uk-text-center uk-text-lead" for="culture">Describe the culture, environment and people present at the workplace</label>
+                <div class="uk-form-controls">
+                    <textarea class="uk-textarea" id="culture" placeholder="Some text..."></textarea>
+                </div>
+            </div>
+
+            <div class="uk-margin uk-align-center uk-width-3-4 uk-margin-large-top">
+                <label class="uk-form-label uk-text-center uk-text-lead" for="empRelationship">Please explain your overall professional relationship with this employer</label>
+                <div class="uk-form-controls">
+                    <textarea class="uk-textarea" id="empRelationship" type="text" placeholder="Some text..."></textarea>
+                </div>
+            </div>
+
+            <div class="uk-margin uk-align-center uk-width-3-4 uk-margin-large-top">
+                <div class="uk-form-label uk-text-center uk-text-lead">How satisfied were you overall with your co-op experience?</div>
+                <div class="uk-form-controls uk-form-controls-text">
+                    <label><input class="uk-radio" type="radio" name="q5" value="1" id="r1"> Extremely dissatisfied</label><br>
+                    <label><input class="uk-radio" type="radio" name="q5" value="2" id="r2"> Somewhat dissatisfied</label><br>
+                    <label><input class="uk-radio" type="radio" name="q5" value="3" id="r3"> Unremarkable experience</label><br>
+                    <label><input class="uk-radio" type="radio" name="q5" value="4" id="r4"> Pretty satisfied</label><br>
+                    <label><input class="uk-radio" type="radio" name="q5" value="5" id="r5"> Extremely satisfied</label><br>
+                </div>
+            </div>
+        </form>
+        <button class="uk-button uk-button-danger uk-width-1-1" onclick="onSubmit()">Submit Feedback</button>
+    </div>
+</div>
+</body>
+</html>

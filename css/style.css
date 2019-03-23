@@ -1,0 +1,81 @@
+#mySidenav a {
+    position: absolute;
+    left: -80px;
+    transition: 0.3s;
+    padding: 15px;
+    width: 100px;
+    text-decoration: none;
+    font-size: 20px;
+    color: white;
+    border-radius: 0 5px 5px 0;
+}
+
+
+#mySidenav a:hover {
+    left: 0;
+}
+
+#home {
+    top: 20px;
+    background-color: #D41B2C;
+}
+
+#submit {
+    top: 80px;
+    background-color: #A4804A;
+}
+
+#about {
+    top: 140px;
+    background-color: #A19994;
+}
+
+input[type=checkbox] {
+    background-color: #d0dbdf;
+    width: 30px;
+    height: 30px;
+    margin: 10px;
+}
+
+input[type=checkbox]:checked {
+    background-color: #6a808b;
+}
+
+input[type=radio] {
+    background-color: #d0dbdf;
+    margin: 10px;
+}
+
+#r1 {
+    width: 10px;
+    height: 10px;
+    margin-left:20px;
+}
+#r2 {
+    width: 15px;
+    height: 15px;
+    margin-left: 18px;
+}
+#r3 {
+    width: 20px;
+    height: 20px;
+    margin-left: 15px;
+}
+#r4 {
+    width: 25px;
+    height: 25px;
+    margin-left:12px;
+}
+#r5 {
+    width: 30px;
+    height: 30px;
+}
+
+input[type=radio]:checked {
+    background-color: #6a808b;
+}
+
+.uk-textarea {
+    background-color: #d0dbdf;
+    border-radius: 10px;
+}
